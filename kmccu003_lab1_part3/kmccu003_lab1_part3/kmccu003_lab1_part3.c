@@ -35,11 +35,10 @@ int main(void)
 			cntavail += 1;
 		}
 		
-		//cntavail -= 4;
 		PORTC = 4-cntavail;
 		
 		if (PORTC == 0x00) { //if full
-			PORTC = (PORTC & 0xFF) | 0x01;
+			PORTC = (PORTC & 0xFF) | 0x80; //set bit 7 to 1
 		}
 	}
 

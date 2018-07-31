@@ -14,17 +14,17 @@ int main(void)
 
     // initialize to 0s
     unsigned char tmpB = 0x00; 	// Temporary variable to hold the value of B
-    //unsigned char tmpA = 0x00; // Temporary variable to hold the value of A
+    unsigned char tmpA = 0x00; // Temporary variable to hold the value of A
 
     while(1)
     {
         // (1) Read input
-        //tmpA = PINA & 0x01;
+        tmpA = PINA & 0x03;
         
     //led = 1 when door is open and light is 0
 
-    if (PINA == 0x01) { // True if PA0 is 1
-        tmpB = (tmpB & 0xFE) | 0x01; // Sets tmpB to bbbbbbb1
+    if (tmpA == 0x01) { // True if PA0 is 1
+        tmpB = (tmpB & 0xFE) | 0x01; 
         // (clear rightmost 2 bits, then set to 1)
     }
 
