@@ -2,7 +2,7 @@
  * kmccu003_lab1_part1.c
  *
  * Created: 7/30/2018 1:47:12 PM
- * Author : ucrcse
+ * Author : Kiana McCullough & Keilani Conner
  */ 
 
 #include <avr/io.h>

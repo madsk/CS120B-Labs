@@ -2,7 +2,7 @@
  * GccApplication1.c
  *
  * Created: 7/31/2018 12:32:58 PM
- * Author : Kiana
+ * Author : Kiana McCullough & Keilani Conner
  */ 
 
 #include <avr/io.h>
