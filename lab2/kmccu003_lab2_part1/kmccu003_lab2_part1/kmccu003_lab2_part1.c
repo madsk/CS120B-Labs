@@ -39,7 +39,7 @@ int main(void)
 		// 2) Perform Computation
 		
 		for(unsigned char i = 0; i < 8; i++) {
-			if (GetBit(tmpA, i)) { // add up 1's in A, get each bit up to i
+			if (GetBit(tmpA, i)) { // add up 1's in A, get value at bit i
 				count++;
 			}
 		}

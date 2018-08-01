@@ -27,7 +27,7 @@ int main(void)
 	// initialize to 0s
 	unsigned char tmpA = 0x00; // intermediate variable used for port updates
 	unsigned char tmpC = 0x00;
-	unsigned char count = 0x00;
+	//unsigned char count = 0x00;
 	
 	while(1)
 	{
@@ -35,19 +35,44 @@ int main(void)
 		tmpA = PINA & 0x0F; // Mask PINA to only get the bit you are interested in, first 4 bits
 		tmpC = 0x00;
 		// 2) Perform Computation
+		
+		if (tmpA <= 4) { //low fuel PC6
+			tmpC = SetBit(tmpC, 6, 1);
+		}
+		else {
+			tmpC = SetBit(tmpC, 6, 0); //turn off low fuel light if not less than 4
+		}
+		
 		if (tmpA == 1 || tmpA == 2) {
-			tmpC = (tmpC & 0xFE) | 0x01; //clear lsb, then set to 1
+			tmpC = SetBit(tmpC, 0, 1); //clear lsb, then set to 1
+			//tmpC = 0x20;
 		}
 		
 		if (tmpA == 3 || tmpA == 4) {
-			tmpC = (tmpC & 0xFC) | 0x01; //clear lsb, then set to 1
+			//tmpC = SetBit(tmpC, 1, 1);
+			tmpC = 0x30;
 		}
+		
+		if (tmpA == 5 || tmpA == 6) {
+			tmpC = 0x38;
+		}
+				
+		if (tmpA == 7 || tmpA == 8 || tmpA == 9) {
+			tmpC = 0x3C;
+		}
+						
+		if (tmpA == 10 || tmpA == 11 || tmpA == 12) {
+			tmpC = 0x3E;
+		}
+								
+		if (tmpA == 13 || tmpA == 14 || tmpA == 15) {
+			tmpC = 0x3F;
+		}
+		
 		PORTC = tmpC;
-		
-		
-		
+
 		// 3) write results to port
-		PORTC = count; //result of 1's in A & B
+		//PORTC = count; //result of 1's in A & B
 	}
 }
 
