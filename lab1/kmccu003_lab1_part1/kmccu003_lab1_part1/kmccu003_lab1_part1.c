@@ -1,9 +1,12 @@
-/*
- * kmccu003_lab1_part1.c
- *
- * Created: 7/30/2018 1:47:12 PM
- * Author : Kiana McCullough & Keilani Conner
- */ 
+/*	  Author : Kiana McCullough
+ * 
+ *    Partner(s) Name & E-mail: Keilani Conner, kconn006@ucr.edu
+ *    Lab Section: B21
+ *    Assignment: Lab # 1 Exercise # 1
+ *    
+ *    I acknowledge all content contained herein, excluding template or example
+ *    code, is my own original work.
+ */
 
 #include <avr/io.h>
 
