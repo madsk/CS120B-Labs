@@ -9,13 +9,13 @@
 
 enum States{Init, s0, s1} state;
 	
-unsigned char button = 0;
-unsigned char tmpB = 0;
+unsigned char button = 0x00;
+unsigned char tmpB = 0x00;
 
 void Tick() {
 	
 	switch(state) { //transitions
-		case Init:
+		case Init: //automatically go to s0
 			state = s0;
 			break;
 			
@@ -61,8 +61,9 @@ int main(void) {
 	DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
 	DDRB = 0xFF; PORTB = 0x00; // Configure port B's 8 pins as outputs
 	
-	state = Init;
+	button = PINA & 0x01;
 	tmpB = 0;
+	state = Init;
 
 	while(1) {
 		void Tick();

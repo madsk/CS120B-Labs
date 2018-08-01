@@ -28,17 +28,16 @@ int main(void)
 	
     while (1) 
     {
+		weight = 0x00;
 		tmpB = PINB & 0x01; //0x01 is bit 0
 		tmpD = PIND;
-		weight = (PINB & 0x01) + PIND;
 		
-		if((tmpD >= 5 && tmpB == 0) || (tmpD > 79 && tmpB == 1)) {
-			SetBit(tmpB, 2, 0);
-			SetBit(tmpB, 1, 1); //enable airbag PB1 = 1
+		if(((tmpD >= 5 && tmpB == 0) || (tmpD > 5 && tmpB == 1)) && ((tmpD < 70 && tmpB == 1) || (tmpD < 70 && tmpB == 0))) {
+			SetBit(tmpB, 2, 1);
+			SetBit(tmpB, 1, 0); //enable airbag PB1 = 1
 		}
 		
-		//if((weight >= 70) || (tmpD > 70 && tmpB == 1)) {
-		if(weight >= 70) {
+		if((tmpD >= 70 && tmpB == 0) || (tmpD > 70 && tmpB == 1)) {
 			SetBit(tmpB, 1, 0); //disable airbag
 			SetBit(tmpB, 2, 1); //airbag disabled light on PB2 = 1
 		}
