@@ -1,4 +1,4 @@
-/*	  Author : Kiana McCullough
+/*    Author : Kiana McCullough
  * 
  *    Partner(s) Name & E-mail: Keilani Conner, kconn006@ucr.edu
  *    Lab Section: B21
