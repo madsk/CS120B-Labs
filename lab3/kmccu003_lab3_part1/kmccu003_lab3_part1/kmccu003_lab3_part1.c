@@ -30,8 +30,14 @@ void Tick() {
 		
 		case s1:
 			if (button) { //second press
-				state = s1;
+				state = s0;
 			}	
+			else { //button not pressed stay in s1
+				state = s1;
+			}
+			break;
+			
+			default:
 			break;
 	}
 	
@@ -42,12 +48,12 @@ void Tick() {
 			break;
 			
 		case s0:
-			tmpB = 0x02; //bit1
+			tmpB = 0x01; //bit1
 			PORTB = tmpB;
 			break;
 			
 		case s1:
-			tmpB = 0x01;
+			tmpB = 0x02;
 			PORTB = tmpB;
 			break;
 			
