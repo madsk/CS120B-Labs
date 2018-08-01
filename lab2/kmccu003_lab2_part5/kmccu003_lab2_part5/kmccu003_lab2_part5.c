@@ -24,23 +24,32 @@ int main(void)
 	
 	unsigned char tmpB = 0x00;
 	unsigned char tmpD = 0x00;
-	//unsigned char airbag = 0x00;
+	unsigned char weight = 0x00;
 	
     while (1) 
     {
 		tmpB = PINB & 0x01; //0x01 is bit 0
 		tmpD = PIND;
+		weight = (PINB & 0x01) + PIND;
 		
 		if((tmpD >= 5 && tmpB == 0) || (tmpD > 79 && tmpB == 1)) {
+			SetBit(tmpB, 2, 0);
 			SetBit(tmpB, 1, 1); //enable airbag PB1 = 1
 		}
 		
-		if((tmpD >= 70 && tmpB == 0) || (tmpD > 70 && tmpB == 1)) {
+		//if((weight >= 70) || (tmpD > 70 && tmpB == 1)) {
+		if(weight >= 70) {
+			SetBit(tmpB, 1, 0); //disable airbag
 			SetBit(tmpB, 2, 1); //airbag disabled light on PB2 = 1
 		}
 		
-		PORTB = tmpB; //upper nibble of PINA
-		PORTD = tmpD; //lower nibble of PINA
+		if ((tmpD <= 5 && tmpB == 0) || (tmpD < 5 && tmpB == 1)) {
+			SetBit(tmpB, 1, 0); //both off
+			SetBit(tmpB, 2, 0); 
+		}
+		
+		PORTB = tmpB;
+		//PORTD = tmpD;
     }
 }
 /*(Challenge): A car's passenger-seat weight sensor outputs a 9-bit value (ranging from 0 to 511)
