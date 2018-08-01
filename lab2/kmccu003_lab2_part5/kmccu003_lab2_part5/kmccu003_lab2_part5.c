@@ -31,7 +31,7 @@ int main(void)
 		tmpB = PINB & 0x01; //0x01 is bit 0
 		tmpD = PIND;
 		
-		if((tmpD >= 70 && tmpB == 0) || (tmpD > 79 && tmpB == 1)) {
+		if((tmpD >= 5 && tmpB == 0) || (tmpD > 79 && tmpB == 1)) {
 			SetBit(tmpB, 1, 1); //enable airbag PB1 = 1
 		}
 		
