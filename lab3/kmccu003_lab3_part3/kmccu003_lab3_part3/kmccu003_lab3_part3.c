@@ -54,6 +54,10 @@ void Tick() {
 				state = RELEASED;
 			}
 			
+			else if(button_X) {
+				state = LOCKED;
+			}
+			
 			else { //lock right away for wrong input
 				state = LOCKED;
 			}
@@ -65,6 +69,10 @@ void Tick() {
 			}
 		
 			else if(!button_X && button_Y && !button_H && !button_lock) { //if y is pressed, unlock!
+				state = UNLOCK;
+			}
+			
+			else if(button_X) {
 				state = UNLOCK;
 			}
 			

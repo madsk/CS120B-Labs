@@ -78,6 +78,10 @@ void Tick() {
 			if(!button_X && !button_Y && !button_H && !button_lock) { //stay if no button is pressed
 				state = RELEASED;
 			}
+			
+			if(button_X) { //stay if no button is pressed
+				state = PRESSED;
+			}
 		
 			else if(!(GetBit(tmpB, 0))){
 				if(!button_X && button_Y && !button_H && !button_lock) { //if y is pressed and button is locked, open it!

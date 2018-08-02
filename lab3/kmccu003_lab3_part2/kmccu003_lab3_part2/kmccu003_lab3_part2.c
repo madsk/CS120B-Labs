@@ -7,7 +7,7 @@
 
 #include <avr/io.h>
 
-enum States{INIT, INC, DEC, RESET, WAIT} state;
+enum States{START, INIT, INC, DEC, RESET, WAIT, WAIT2} state;
 
 unsigned char button_0 = 0x00;
 unsigned char button_1 = 0x00;
@@ -20,11 +20,11 @@ void Tick() {
 	
 	switch(state) { //transitions
 
-		case INIT:
-			state = WAIT;
+		case START:
+			state = INIT;
 			break;
 		
-		case WAIT:
+		case INIT:
 			
 			if(button_0 && !button_1) { //button 1 pressed
 				state = INC;
@@ -37,33 +37,40 @@ void Tick() {
 			else if(button_0 && button_1) { //both pressed
 				state = RESET;
 			}
-			else{ //stay
-				state = WAIT;
+			else if(!button_0 && !button_1){ //stay
+				state = INIT;
 			}
 		break;
 		
+		
 		case INC:
 			
-			if(!button_0 && !button_1) { //neither
+			/*if(!button_0 && !button_1) { //neither
 				state = WAIT;
 			}
 		
 			else if(button_0 && !button_1) { //stay
-				state = INC;
+				state = PRESS;
 			}
 			
 			else if(!button_0 && button_1) { //go to dec
 				state = DEC;
-			}
+			}*/
 			
-			else if(button_0 && button_1) { //both pressed
+			
+			if(button_0 && button_1) { //both pressed
 				state = RESET;
 			}
+			
+			else {
+				state = WAIT2;
+			}
+			
 		break;
 			
 		case DEC:
 		
-			if(!button_0 && !button_1) { //neither
+			/*if(!button_0 && !button_1) { //neither
 				state = WAIT;
 			}
 			
@@ -77,7 +84,16 @@ void Tick() {
 			
 			else if(button_0 && button_1) { //both
 				state = RESET;
+			}*/
+			
+			if(button_0 && button_1) { //both pressed
+				state = RESET;
 			}
+			
+			else {
+				state = WAIT2;
+			}
+			
 		break;
 			
 			case RESET:
@@ -86,7 +102,7 @@ void Tick() {
 				}
 					
 				else if(!button_0 && !button_1) { //neither
-					state = WAIT;
+					state = INIT;
 				}
 					
 				else if(!button_0 && button_1) { //dec
@@ -98,21 +114,48 @@ void Tick() {
 				}
 			break;
 			
+			case WAIT:
+				if(button_0 && button_1) { //both pressed, stay
+					state = RESET;
+				}
+					
+				else if(!button_0 && button_1) { //dec
+					state = DEC;
+				}
+				
+				else if(button_0 && !button_1) { //inc
+					state = INC;
+				}
+				else {
+					state = WAIT;
+				}
+			break;
+			
+			case WAIT2:
+				if(!button_0 && !button_1) { //both pressed, stay
+					state = WAIT;
+				}
+					
+				else if(button_0 && button_1) { //dec
+					state = RESET;
+				}
+				
+				else {
+					state = WAIT2;
+				}
+			
 			default:
-				state = INIT;
 				break;
 			
 			
 	} //end transitions
 	
 	
-		
-	
 	switch(state) { //actions
 			
 		case INIT:
 			break;
-		
+			
 		case INC:
 			if(tmpC < 9) {
 				tmpC += 1;
