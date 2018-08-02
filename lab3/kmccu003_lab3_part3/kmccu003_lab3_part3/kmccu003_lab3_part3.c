@@ -15,6 +15,7 @@ unsigned char button_H = 0x00; //#
 unsigned char button_lock = 0x00; //bit 7
 
 unsigned char tmpB;
+unsigned char tmpC;
 
 void Tick() {
 	
@@ -22,14 +23,15 @@ void Tick() {
 	button_Y = PINA & 0x02; //bit 1
 	button_H = PINA & 0x04; //bit 2
 	button_lock = PINA & 0x80; //bit 7
+	tmpC = 0x00;
 	
 	switch(state) { //transitions
 		
-		case INIT:
+		case INIT: //goes straight to locked
 			state = LOCKED;
 		break;
 		
-		case LOCKED:
+		case LOCKED: //001
 		if(button_H && !button_X && !button_Y && !button_lock) { //if # is pressed
 			state = PRESSED;
 		}
@@ -43,7 +45,7 @@ void Tick() {
 		}
 		break;
 		
-		case PRESSED:
+		case PRESSED: //010
 			if(button_H && !button_X && !button_Y && !button_lock) { //if # is pressed again, stay here
 				state = PRESSED;
 			}
@@ -57,7 +59,7 @@ void Tick() {
 			}
 		break;
 		
-		case RELEASED:
+		case RELEASED: //011
 			if(!button_X && !button_Y && !button_H && !button_lock) { //stay if no button is pressed
 				state = RELEASED;
 			}
@@ -71,7 +73,7 @@ void Tick() {
 			}
 		break;
 		
-		case UNLOCK:
+		case UNLOCK: //100
 			if(!button_X && !button_Y && !button_H && button_lock) { //if button lock is pressed from inside
 				state = LOCKED;
 			}
@@ -84,20 +86,31 @@ void Tick() {
 	
 	switch(state) { //actions
 		case INIT:
+			tmpC = 0x00;
+			PORTC = tmpC;
 			break;
 		
 		case LOCKED: //wrong input automatically locks to 0
+			
 			tmpB = 0x00;
+			tmpC = 0x01;
+			PORTC = tmpC;
 			break;
 		
 		case PRESSED:
+			tmpC = 0x02;
+			PORTC = tmpC;
 			break;
 		
 		case RELEASED:
+			tmpC = 0x03;
+			PORTC = tmpC;
 			break;
 			
 		case UNLOCK: //PB0 is 1 if unlocked
-			tmpB = 0x01;
+			tmpB = 0x04;
+			tmpC = 0x00;
+			PORTC = tmpC;
 			break;
 		
 		default:
@@ -109,8 +122,9 @@ int main(void) {
 	
 	DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
 	DDRB = 0xFF; PORTB = 0x00; // Configure port B's 8 pins as outputs
+	DDRC = 0xFF; PORTC = 0x00; // Configure port C's 8 pins as outputs
 	
-	state = LOCKED; //initially locked
+	state = INIT; //initially locked
 
 	while(1) {
 		Tick();
