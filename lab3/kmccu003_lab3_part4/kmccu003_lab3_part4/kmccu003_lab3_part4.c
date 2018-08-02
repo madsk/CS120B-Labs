@@ -7,6 +7,21 @@
 
 #include <avr/io.h>
 
+
+// Bit-access function
+
+unsigned char SetBit(unsigned char x, unsigned char k, unsigned char b) {
+
+	return (b ? x | (0x01 << k) : x & ~(0x01 << k));
+
+}
+
+unsigned char GetBit(unsigned char x, unsigned char k) {
+
+	return ((x & (0x01 << k)) != 0);
+
+}
+
 enum States{INIT, LOCKED, PRESSED, RELEASED, UNLOCK} state;
 
 unsigned char button_X = 0x00; //X
@@ -67,7 +82,7 @@ void Tick() {
 			else if(!button_X && button_Y && !button_H && !button_lock) { //if y is pressed and button is locked, open it!
 				state = UNLOCK;
 			}
-			else if(!button_X && button_Y && !button_H && button_lock) { //if y is pressed and button is unlocked
+			else if(!button_X && button_Y && !button_H && GetBit(tmpB, 7)) { //if y is pressed and button is unlocked
 				state = LOCKED;
 			}
 			else {
