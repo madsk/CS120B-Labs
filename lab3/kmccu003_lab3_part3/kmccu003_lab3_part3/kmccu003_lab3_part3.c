@@ -31,7 +31,7 @@ void Tick() {
 			state = LOCKED;
 		break;
 		
-		case LOCKED: //001
+		case LOCKED: //state 1
 		if(button_H && !button_X && !button_Y && !button_lock) { //if # is pressed
 			state = PRESSED;
 		}
@@ -45,7 +45,7 @@ void Tick() {
 		}
 		break;
 		
-		case PRESSED: //010
+		case PRESSED: //state 2
 			if(button_H && !button_X && !button_Y && !button_lock) { //if # is pressed again, stay here
 				state = PRESSED;
 			}
@@ -59,7 +59,7 @@ void Tick() {
 			}
 		break;
 		
-		case RELEASED: //011
+		case RELEASED: //state 3
 			if(!button_X && !button_Y && !button_H && !button_lock) { //stay if no button is pressed
 				state = RELEASED;
 			}
@@ -73,7 +73,7 @@ void Tick() {
 			}
 		break;
 		
-		case UNLOCK: //100
+		case UNLOCK: //state 4
 			if(!button_X && !button_Y && !button_H && button_lock) { //if button lock is pressed from inside
 				state = LOCKED;
 			}

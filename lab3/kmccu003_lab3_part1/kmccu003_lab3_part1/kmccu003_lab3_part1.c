@@ -7,49 +7,74 @@
 
 #include <avr/io.h>
 
-enum States{INIT, s0, s1} state;
+enum States{INIT, s0, led1, led2, release} state;
 	
 unsigned char button = 0x00;
 unsigned char tmpB = 0x00;
 
 void Tick() {
 	
+	button = PINA & 0x01; //PA0
+	
 	switch(state) { //transitions
+		
 		case INIT: //automatically go to s0
 			state = s0;
 			break;
 			
 		case s0:
-			state = (PINA & 0x01) ? s1 :state;
+			if(button) { //if button is pressed, go to led1
+				state = led1;
+			}
+			else if(!button) { //stay
+				state = s0;
+			}
 			break;
 		
-		case s1:
-			if (button) { //second press
-				state = s0;
+		case led1: //2
+			if (button) { //stay //pressing button again should change it to 1
+				state = led1;
 			}	
-			else { //button not pressed stay in s1
-				state = s1;
+			else if (!button) { //stay upon release
+				state = release;
 			}
 			break;
 			
-			default:
+		case release:
+			if(button) {
+				state = led2; //change to 1
+			}
+			else if (!button) {
+				state = release; //stays 2
+			}
 			break;
+			
+		case led2: //1
+			state = release;
+			break;
+			
+			
+			default:
+				break;
 	}
 	
 	switch(state) { //actions
 		case INIT:
-			tmpB = 0x01; //bit 0
-			//PORTB = tmpB;
+			tmpB = 0x01; //bit 0, initially on
 			break;
 			
 		case s0:
 			tmpB = 0x01; //bit1
-			//PORTB = tmpB;
 			break;
 			
-		case s1:
+		case led1:
 			tmpB = 0x02;
-			//PORTB = tmpB;
+			break;
+			
+		case led2:
+			tmpB = 0x01;
+			
+		case release:
 			break;
 			
 		default:
@@ -62,13 +87,11 @@ int main(void) {
 	DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
 	DDRB = 0xFF; PORTB = 0x01; // Configure port B's 8 pins as outputs
 	
-	
 	tmpB = 0;
-	state = Init;
+	state = INIT;
 
 	while(1) {
-		button = PINA & 0x01;
-		void Tick();
+		Tick();
 		PORTB = tmpB;
 	}
 	
