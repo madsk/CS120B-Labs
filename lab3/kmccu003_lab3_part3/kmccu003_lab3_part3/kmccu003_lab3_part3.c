@@ -21,26 +21,26 @@ void Tick() {
 	button_X = PINA & 0x01; //bit 0
 	button_Y = PINA & 0x02; //bit 1
 	button_H = PINA & 0x04; //bit 2
-	button_lock = PINA & 0x80; //bit 7, unlock if 1, locked if 0
+	button_lock = PINA & 0x80; //bit 7
 	
 	switch(state) { //transitions
 		
 		case INIT:
+			state = LOCKED;
+		break;
+		
+		case LOCKED:
 		if(button_H && !button_X && !button_Y && !button_lock) { //if # is pressed
-			state = INIT;
+			state = PRESSED;
 		}
 		
-		if (lock) { //if bit 7 is on
+		else if (button_lock) { //if bit 7 is on
 			state = LOCKED;
 		}
 		
 		else { //stay
-			state = INIT;
+			state = LOCKED;
 		}
-		break;
-		
-		case LOCKED:
-			state = INIT; //return to init
 		break;
 		
 		case PRESSED:
@@ -86,7 +86,7 @@ void Tick() {
 		case INIT:
 			break;
 		
-		case LOCKED: //wrong input automatically locks
+		case LOCKED: //wrong input automatically locks to 0
 			tmpB = 0x00;
 			break;
 		
