@@ -1,8 +1,8 @@
 /*
- * kmccu003_lab3_part4.c
+ * kmccu003_lab3_part5.c
  *
- * Created: 8/2/2018 11:56:10 AM
- * Author : Kiana
+ * Created: 8/2/2018 1:50:57 PM
+ * Author : ucrcse
  */ 
 
 #include <avr/io.h>

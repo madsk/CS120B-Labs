@@ -7,7 +7,7 @@
 
 #include <avr/io.h>
 
-enum States{START, INIT, INC, DEC, RESET} state;
+enum States{INIT, INC, DEC, RESET, WAIT} state;
 
 unsigned char button_0 = 0x00;
 unsigned char button_1 = 0x00;
@@ -19,17 +19,14 @@ void Tick() {
 	button_1 = PINA & 0x02; //dec
 	
 	switch(state) { //transitions
-		
-		case START: //automatically go INIT
-		state = INIT;
-	break;
-		
+
 		case INIT:
-			if(!button_0 && !button_1) { //stay
-				state = INIT;
-			}
+			state = WAIT;
+			break;
+		
+		case WAIT:
 			
-			else if(button_0 && !button_1) { //button 1 pressed
+			if(button_0 && !button_1) { //button 1 pressed
 				state = INC;
 			}
 			
@@ -40,15 +37,15 @@ void Tick() {
 			else if(button_0 && button_1) { //both pressed
 				state = RESET;
 			}
+			else{ //stay
+				state = WAIT;
+			}
 		break;
 		
 		case INC:
-			if(button_0 && button_1) { //both pressed
-				state = RESET;
-			}
 			
-			else if(!button_0 && !button_1) { //neither
-				state = INIT;
+			if(!button_0 && !button_1) { //neither
+				state = WAIT;
 			}
 		
 			else if(button_0 && !button_1) { //stay
@@ -58,23 +55,28 @@ void Tick() {
 			else if(!button_0 && button_1) { //go to dec
 				state = DEC;
 			}
+			
+			else if(button_0 && button_1) { //both pressed
+				state = RESET;
+			}
 		break;
 			
 		case DEC:
-			if(button_0 && button_1) { //both pressed
-				state = RESET;
-			}
-			
-			else if(!button_0 && !button_1) { //neither
-				state = INIT;
+		
+			if(!button_0 && !button_1) { //neither
+				state = WAIT;
 			}
 			
 			else if(!button_0 && button_1) { //stay
-				state = DEC; 
+				state = DEC;
 			}
 			
-			else if(button_0 && !button_1) {
+			else if(button_0 && !button_1) { //neither
 				state = INC;
+			}
+			
+			else if(button_0 && button_1) { //both
+				state = RESET;
 			}
 		break;
 			
@@ -84,7 +86,7 @@ void Tick() {
 				}
 					
 				else if(!button_0 && !button_1) { //neither
-					state = INIT;
+					state = WAIT;
 				}
 					
 				else if(!button_0 && button_1) { //dec
@@ -96,6 +98,10 @@ void Tick() {
 				}
 			break;
 			
+			default:
+				state = INIT;
+				break;
+			
 			
 	} //end transitions
 	
@@ -103,8 +109,6 @@ void Tick() {
 		
 	
 	switch(state) { //actions
-		case START:
-			break;
 			
 		case INIT:
 			break;
@@ -112,6 +116,7 @@ void Tick() {
 		case INC:
 			if(tmpC < 9) {
 				tmpC += 1;
+
 			}
 			break;
 		
@@ -122,7 +127,7 @@ void Tick() {
 			break;
 			
 		case RESET:
-			tmpC = 0;
+			tmpC = 0x00;
 			break;
 		
 		default:
