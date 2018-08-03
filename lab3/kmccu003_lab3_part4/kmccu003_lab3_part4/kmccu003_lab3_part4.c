@@ -1,9 +1,10 @@
-/*
- * kmccu003_lab3_part4.c
- *
- * Created: 8/2/2018 11:56:10 AM
- * Author : Kiana
- */ 
+/*    Author : Kiana McCullough
+ *    Lab Section: B21
+ *    Assignment: Lab # 3 Exercise # 4
+ *    
+ *    I acknowledge all content contained herein, excluding template or example
+ *    code, is my own original work.
+ */
 
 #include <avr/io.h>
 
