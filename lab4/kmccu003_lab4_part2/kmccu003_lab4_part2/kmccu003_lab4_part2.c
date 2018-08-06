@@ -18,8 +18,8 @@ unsigned char tmpC;
 
 void Tick() {
 	
-	button_0 = PINA & 0x01; //inc
-	button_1 = PINA & 0x02; //dec
+	button_0 = ~PINA & 0x01; //inc
+	button_1 = ~PINA & 0x02; //dec
 	
 	switch(state) { //transitions
 
@@ -48,19 +48,6 @@ void Tick() {
 		
 		case INC:
 			
-			/*if(!button_0 && !button_1) { //neither
-				state = WAIT;
-			}
-		
-			else if(button_0 && !button_1) { //stay
-				state = PRESS;
-			}
-			
-			else if(!button_0 && button_1) { //go to dec
-				state = DEC;
-			}*/
-			
-			
 			if(button_0 && button_1) { //both pressed
 				state = RESET;
 			}
@@ -72,22 +59,6 @@ void Tick() {
 		break;
 			
 		case DEC:
-		
-			/*if(!button_0 && !button_1) { //neither
-				state = WAIT;
-			}
-			
-			else if(!button_0 && button_1) { //stay
-				state = DEC;
-			}
-			
-			else if(button_0 && !button_1) { //neither
-				state = INC;
-			}
-			
-			else if(button_0 && button_1) { //both
-				state = RESET;
-			}*/
 			
 			if(button_0 && button_1) { //both pressed
 				state = RESET;
@@ -142,10 +113,6 @@ void Tick() {
 				else if(button_0 && button_1) { //reset
 					state = RESET;
 				}
-				
-				/*else if(button_0 && !button_1) { //still inc
-					state = INC;
-				}*/
 				
 				else {
 					state = RELEASE;
