@@ -41,12 +41,11 @@ int main(void)
 		}
 		
 		if (tmpA == 1 || tmpA == 2) {
-			tmpC = SetBit(tmpC, 0, 1); //clear lsb, then set to 1
+			tmpC = SetBit(tmpC, 5, 1); //clear lsb, then set to 1
 			//tmpC = 0x20;
 		}
 		
 		if (tmpA == 3 || tmpA == 4) {
-			//tmpC = SetBit(tmpC, 1, 1);
 			tmpC = 0x30;
 		}
 		
