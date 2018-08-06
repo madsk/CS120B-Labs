@@ -7,7 +7,7 @@
 
 #include <avr/io.h>
 
-enum States{START, INIT, INC, DEC, WAIT} state;
+enum States{START, INIT, WAIT, ODD, EVEN, PRESS, RELEASE} state; //5 4 and A A
 
 unsigned char button = 0x00;
 unsigned char cnt = 0x00; //button presses
@@ -15,10 +15,10 @@ unsigned char tmpC;
 
 void Tick() {
 	
-	button = ~PINA & 0x01; //input PA0
+	button = PINA & 0x01; //input PA0
 
 	switch(state) { //transitions
-
+		
 		case START: 
 			state = INIT;
 			break;
@@ -26,44 +26,54 @@ void Tick() {
 		case INIT:
 			
 			if(button) { //button is pressed
-				state = INC;
+				state = PRESS;
 			}
 
-			else if(!button_0){ //stay
+			else if(!button){ //stay
 				state = INIT;
 			}
 			break;
-		
-		
-		case INC:
 			
-			if(!button) {
-				state = WAIT;
-			}
-			
-			break;
-			
-		case DEC:
-			
-			if(!button) {
-				state = WAIT;
-			}
-			
-			break;
-			
-			case WAIT:
-					
-				if(cnt<6 && button) { //inc
-					state = INC;
-					cnt++;
+			case PRESS:
+				if(button) {
+					state = PRESS;
+				}
+				else if(!button) {
+					state = RELEASE;
 				}
 				
-				else if(cnt>=6 && button) { //6 presses
-					state = INIT;
-				}
-
+			case RELEASE:
+			if(!button) {
+				state = RELEASE;
+			}
+			else if(button) {
+				state = ODD;
+			}
+			break;
+				
+			case ODD:
+			if(button) {
+				state = ODD;
+			}
+			
+			else if(!button) {
+				state = WAIT;
+			}
+			
+			case WAIT:
+			if()
+			
 			break;
 			
+			case EVEN:
+			if(!button) {
+				state = EVEN;
+			}
+			
+			else if(button) {
+				state = ODD;
+			}
+		
 			default:
 				break;
 			
@@ -74,10 +84,17 @@ void Tick() {
 	switch(state) { //actions
 			
 		case INIT:
-			cnt = 0; //reset
 			break;
 			
-		case INC:
+		case PRESS:
+			break;
+			
+		case ODD:
+			tmpC = 0xAA;
+			break;
+		
+		case EVEN:
+			tmpC = 0x54;
 			break;
 		
 		default:
