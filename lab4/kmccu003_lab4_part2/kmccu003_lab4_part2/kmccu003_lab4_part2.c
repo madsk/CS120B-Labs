@@ -18,8 +18,8 @@ unsigned char tmpC;
 
 void Tick() {
 	
-	button_0 = PINA & 0x01; //inc
-	button_1 = PINA & 0x02; //dec
+	button_0 = ~PINA & 0x01; //inc
+	button_1 = ~PINA & 0x02; //dec
 	
 	switch(state) { //transitions
 
