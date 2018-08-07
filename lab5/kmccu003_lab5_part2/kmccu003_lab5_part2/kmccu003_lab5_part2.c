@@ -82,7 +82,7 @@ void Tick() { //begin fct
 			else{
 			state = led_0;
 			}
-		break;
+			break;
 	
 	case press_0:
 		if(tmpA == 0x01) {
@@ -188,6 +188,7 @@ void Tick() { //begin fct
 			break;
 
 		default:
+		state = INIT;
 			break;
 			
 	}//end actions
@@ -196,10 +197,12 @@ void Tick() { //begin fct
 int main(void)
 {
 	/* Replace with your application code */
+	DDRA = 0x00; //set port C to output
+	PORTA = 0xFF; //init port C to 0's
 	DDRC = 0xFF; //set port C to output
 	PORTC = 0x00; //init port C to 0's
 	
-	TimerSet(1000);
+	TimerSet(260);
 	TimerOn();
 	//unsigned char tmpB = 0x00;
 	

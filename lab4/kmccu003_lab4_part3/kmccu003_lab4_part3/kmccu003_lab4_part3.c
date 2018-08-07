@@ -7,7 +7,7 @@
 
 #include <avr/io.h>
 
-enum States{START, INIT, WAIT, ODD, EVEN, PRESS, RELEASE} state; //5 4 and A A
+enum States{START, INIT, /*WAIT,*/ ODD, EVEN, PRESS /*,RELEASE*/} state; //5 4 and A A
 
 unsigned char button = 0x00;
 unsigned char cnt = 0x00; //button presses
@@ -39,31 +39,31 @@ void Tick() {
 					state = PRESS;
 				}
 				else if(!button) {
-					state = RELEASE;
+					state = ODD;
 				}
 				
-			case RELEASE:
+			/*case RELEASE:
 			if(!button) {
 				state = RELEASE;
 			}
 			else if(button) {
 				state = ODD;
 			}
-			break;
+			break;*/
 				
 			case ODD:
-			if(button) {
+			if(!button) {
 				state = ODD;
 			}
 			
-			else if(!button) {
-				state = WAIT;
+			else if(button) {
+				state = EVEN;
 			}
 			
-			case WAIT:
+			/*case WAIT:
 			if()
 			
-			break;
+			break;*/
 			
 			case EVEN:
 			if(!button) {
@@ -94,7 +94,7 @@ void Tick() {
 			break;
 		
 		case EVEN:
-			tmpC = 0x54;
+			tmpC = 0x55;
 			break;
 		
 		default:

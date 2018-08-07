@@ -46,7 +46,7 @@ void TimerSet(unsigned long M) {
 enum States {INIT, led_0, led_1, led_2} state;
 
 void Tick() {
-	switch(state) {
+	switch(state) { //transitions
 		case INIT:
 			state = led_0;
 			break;
