@@ -1,10 +1,12 @@
-/*
- * kmccu003_lab4_part3.c
- *
- * Created: 8/6/2018 12:16:27 PM
- * Author : Kiana
- */ 
-
+/*    Author : Kiana McCullough
+ * 
+ *    Partner(s) Name & E-mail: Keilani Conner, kconn006@ucr.edu
+ *    Lab Section: B21
+ *    Assignment: Lab # 4 Exercise # 3
+ *    
+ *    I acknowledge all content contained herein, excluding template or example
+ *    code, is my own original work.
+ */
 #include <avr/io.h>
 
 enum States{START, INIT, /*WAIT,*/ ODD, EVEN, PRESS /*,RELEASE*/} state; //5 4 and A A

@@ -1,9 +1,10 @@
-/*
- * kmccu003_lab5_part2.c
- *
- * Created: 8/7/2018 12:02:57 PM
- * Author : Kiana
- */ 
+/*    Author : Kiana McCullough
+ *    Lab Section: B21
+ *    Assignment: Lab # 5 Exercise # 2
+ *    
+ *    I acknowledge all content contained herein, excluding template or example
+ *    code, is my own original work.
+ */
 #include <avr/io.h>
 #include <avr/interrupt.h>
 

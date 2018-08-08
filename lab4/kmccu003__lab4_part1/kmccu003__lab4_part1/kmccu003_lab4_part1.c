@@ -1,9 +1,12 @@
-/*
- * kmccu003__lab4_part1.c
- *
- * Created: 8/5/2018 5:22:50 PM
- * Author : ANARCHY
- */ 
+/*    Author : Kiana McCullough
+ * 
+ *    Partner(s) Name & E-mail: Keilani Conner, kconn006@ucr.edu
+ *    Lab Section: B21
+ *    Assignment: Lab # 4 Exercise # 1
+ *    
+ *    I acknowledge all content contained herein, excluding template or example
+ *    code, is my own original work.
+ */
 #include <avr/io.h>
 
 // Bit-access function
