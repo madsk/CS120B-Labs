@@ -7,7 +7,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "io.c"
+#include "io.h"
 
 volatile unsigned char TimerFlag = 0;
 unsigned long _avr_timer_M = 1;
@@ -45,172 +45,168 @@ void TimerSet(unsigned long M) {
 }
 
 //start
-enum States{START, INIT, INC, DEC, RESET, PRESS, RELEASE} state;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-unsigned char button_0 = 0x00;
-unsigned char button_1 = 0x00;
-unsigned char counter;
+enum States {INIT, led_0, led_1, led_2, press_0, press_1, press_2, release_0, release_1, release_2, reset} state;
 
-void Tick() {
+unsigned char tmpA = 0x00;
+unsigned char score = 5;
+
+void Tick() { //begin fct
 	
-	button_0 = ~PINA & 0x01; //inc
-	button_1 = ~PINA & 0x02; //dec
+	tmpA = ~PINA & 0x01; //use ~ for hardware testing
 	
-	switch(state) { //transitions
-
-		case START:
-		state = INIT;
-		break;
+	switch(state) {
 		
 		case INIT:
+			state = led_0;
+			break;
 		
-		if(button_0 && !button_1) { //button 1 pressed
-			state = INC;
-		}
+		case led_0:
+			if(tmpA == 0x01) { //if button is pressed, have to pause game
+				state = press_0;
+			}
+			else {
+				state = led_1;
+			}
+			break;
 		
-		else if(!button_0 && button_1) { //button 2 pressed
-			state = DEC;
-		}
+		case led_1:
+			if(tmpA == 0x01) { //if button is pressed, have to pause game
+				state = press_1;
+			}
+			else{
+				state = led_2;
+			}
+			break;
 		
-		else if(button_0 && button_1) { //both pressed
-			state = RESET;
-		}
-		else if(!button_0 && !button_1){ //stay
-			state = INIT;
-		}
-		break;
+		case led_2:
+			if(tmpA == 0x01) { //if button is pressed, have to pause game
+				state = press_2;
+			}
+			else{
+				state = led_0;
+			}
+			break;
 		
+		case press_0:
+			if(tmpA == 0x01) {
+				state = press_0;
+			}
+			else {
+				state = release_0;
+			}
+			break;
 		
-		case INC:
+		case press_1:
+			if(tmpA == 0x01) {
+				state = press_1;
+			}
+			else {
+				state = release_1;
+			}
+			break;
 		
-		if(button_0 && button_1) { //both pressed
-			state = RESET;
-		}
+		case press_2:
+			if(tmpA == 0x01) {
+				state = press_2;
+			}
+			else {
+				state = release_2;
+			}
+			break;
 		
-		/*else {
-			state = RELEASE;
-		}*/
+		case release_0:
+			if(tmpA == 0x00) {
+				state = release_0;
+			}
+			else {
+				state = reset;
+			}
+			break;
 		
-		else if(!button_0 && !button_1) {
-			state = RELEASE;
-		}
+		case release_1:
+			if(tmpA == 0x00) {
+				state = release_1;
+			}
+			else {
+				state = reset;
+			}
+			break;
 		
-		else if(button_0 && !button_1) { //if still button_0 keep incrementing
-			state = INC;
-		}
+		case release_2:
+			if(tmpA == 0x00) {
+				state = release_2;
+			}
+			else {
+				state = reset;
+			}
+			break;
 		
-		break;
-		
-		case DEC:
-		
-		if(button_0 && button_1) { //both pressed
-			state = RESET;
-		}
-		
-		/*else {
-			state = RELEASE;
-		}*/
-		
-		else if(!button_0 && !button_1) { //if released
-			state = RELEASE;
-		}
-		
-		else if(!button_0 && button_1) { //if still button keep decrementing
-			state = DEC;
-		}
-		
-		break;
-		
-		case RESET:
-		if(button_0 && button_1) { //both pressed, stay
-			state = RESET;
-		}
-		
-		else if(!button_0 && !button_1) { //neither
-			state = INIT;
-		}
-		
-		else if(!button_0 && button_1) { //dec
-			state = DEC;
-		}
-		
-		else if(button_0 && !button_1) { //inc
-			state = INC;
-		}
-		break;
-		
-		case PRESS:
-		if(button_0 && button_1) { //both pressed, stay
-			state = RESET;
-		}
-		
-		else if(!button_0 && button_1) { //dec
-			state = DEC;
-		}
-		
-		else if(button_0 && !button_1) { //inc
-			state = INC;
-		}
-		else {
-			state = PRESS;
-		}
-		break;
-		
-		case RELEASE:
-		if(!button_0 && !button_1) { //released, wait for press
-			state = PRESS;
-		}
-		
-		else if(button_0 && button_1) { //reset
-			state = RESET;
-		}
-		
-		else {
-			state = RELEASE;
-		}
-		
-		default:
-		break;
-		
+		case reset:
+			if(tmpA == 0x00) {
+				state = INIT;
+			}
+			break;
 	} //end transitions
 	
 	switch(state) { //actions
 		
 		case INIT:
-		break;
-		LCD_Cursor(1); //positions the cursor on the LCD display
-		LCD_WriteData(counter + '0');
+			LCD_ClearScreen();
+			score = 5;
+			LCD_Cursor(1); //positions the cursor on the LCD display
+			LCD_WriteData(score + '0');
+			break;
 		
-		case INC:
-		if(counter < 9) {
-			counter += 1;
-		}
-		LCD_Cursor(1); //positions the cursor on the LCD display
-		LCD_WriteData(counter + '0'); //Writes a char at the position the cursor is currently in
-		break;
+		case led_0:
+			PORTB = 0x01;
+			break;
 		
-		case DEC:
-		if(counter > 0) {
-			counter -= 1;
-		}
-		LCD_Cursor(1); //positions the cursor on the LCD display
-		LCD_WriteData(counter + '0');
-		break;
+		case led_1:
+			PORTB = 0x02;
+			break;
+			
+		case led_2:
+			PORTB = 0x04;
+			break;
 		
-		case RESET:
-		counter = 0x00;
-		LCD_Cursor(1); //positions the cursor on the LCD display
-		LCD_WriteData(counter + '0');
-		break;
+		case press_0:	
+			break;
 		
+		case press_1:
+			break;
+		
+		case press_2:
+			break;
+		
+		case release_0:
+		PORTC = 0x01;
+			break;
+		
+		case release_1:
+		PORTC = 0x02;
+			break;
+		
+		case release_2:
+		PORTC = 0x04;
+			break;
+		
+		case reset:
+		//PORTC = 0x00;
+			break;
+
 		default:
-		break;
-	}
-}
+		state = INIT;
+			break;
+		
+	}//end actions
+}//end fct
 
 int main(void) {
 	
 	DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
+	DDRB = 0x00; PORTB = 0xFF;
 	DDRC = 0xFF; PORTC = 0x00; // Configure port C's 8 pins as outputs
 	DDRD = 0xFF; PORTD = 0x00; // Configure port D's 8 pins as outputs
 	
@@ -219,7 +215,7 @@ int main(void) {
 	
 	LCD_init(); //initialize LCD
 	
-	TimerSet(1000); //1 sec
+	TimerSet(260); //1 sec
 	TimerOn();
 
 	while(1) {
@@ -231,3 +227,6 @@ int main(void) {
 	return 0;
 }
 
+/*(Challenge) Extend the earlier light game to maintain a score on the LCD display.
+The initial score is 5. Each time the user presses the button at the right time, the score increments.
+Each time the user fails, the score decrements. When reaching 9, show victory somehow.*/

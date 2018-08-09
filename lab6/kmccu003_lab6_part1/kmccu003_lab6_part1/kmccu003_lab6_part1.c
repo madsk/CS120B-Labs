@@ -177,9 +177,9 @@ void Tick() {
 	switch(state) { //actions
 		
 		case INIT:
-		break;
 		LCD_Cursor(1); //positions the cursor on the LCD display
 		LCD_WriteData(counter + '0');
+		break;
 		
 		case INC:
 		if(counter < 9) {
