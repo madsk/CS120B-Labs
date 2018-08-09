@@ -49,7 +49,7 @@ enum States{START, INIT, INC, DEC, RESET, PRESS, RELEASE} state;
 
 unsigned char button_0 = 0x00;
 unsigned char button_1 = 0x00;
-unsigned char tmpC;
+unsigned char counter;
 
 void Tick() {
 	
@@ -95,7 +95,7 @@ void Tick() {
 			state = RELEASE;
 		}
 		
-		else if(button_0 && !button_1) { //if still button
+		else if(button_0 && !button_1) { //if still button_0 keep incrementing
 			state = INC;
 		}
 		
@@ -111,11 +111,11 @@ void Tick() {
 			state = RELEASE;
 		}*/
 		
-		else if(!button_0 && !button_1) {
+		else if(!button_0 && !button_1) { //if released
 			state = RELEASE;
 		}
 		
-		else if(!button_0 && button_1) { //if still button
+		else if(!button_0 && button_1) { //if still button keep decrementing
 			state = DEC;
 		}
 		
@@ -157,7 +157,7 @@ void Tick() {
 		break;
 		
 		case RELEASE:
-		if(!button_0 && !button_1) { //released
+		if(!button_0 && !button_1) { //released, wait for press
 			state = PRESS;
 		}
 		
@@ -172,37 +172,35 @@ void Tick() {
 		default:
 		break;
 		
-		
 	} //end transitions
-	
 	
 	switch(state) { //actions
 		
 		case INIT:
 		break;
 		LCD_Cursor(1); //positions the cursor on the LCD display
-		LCD_WriteData(tmpC + '0');
+		LCD_WriteData(counter + '0');
 		
 		case INC:
-		if(tmpC < 9) {
-			tmpC += 1;
+		if(counter < 9) {
+			counter += 1;
 		}
 		LCD_Cursor(1); //positions the cursor on the LCD display
-		LCD_WriteData(tmpC + '0'); //Writes a char at the position the cursor is currently in
+		LCD_WriteData(counter + '0'); //Writes a char at the position the cursor is currently in
 		break;
 		
 		case DEC:
-		if(tmpC > 0) {
-			tmpC -= 1;
+		if(counter > 0) {
+			counter -= 1;
 		}
 		LCD_Cursor(1); //positions the cursor on the LCD display
-		LCD_WriteData(tmpC + '0');
+		LCD_WriteData(counter + '0');
 		break;
 		
 		case RESET:
-		tmpC = 0x00;
+		counter = 0x00;
 		LCD_Cursor(1); //positions the cursor on the LCD display
-		LCD_WriteData(tmpC + '0');
+		LCD_WriteData(counter + '0');
 		break;
 		
 		default:
@@ -213,15 +211,15 @@ void Tick() {
 int main(void) {
 	
 	DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
-	DDRC = 0xFF; PORTC = 0x00; // Configure port B's 8 pins as outputs
-	DDRD = 0xFF; PORTD = 0x00;
+	DDRC = 0xFF; PORTC = 0x00; // Configure port C's 8 pins as outputs
+	DDRD = 0xFF; PORTD = 0x00; // Configure port D's 8 pins as outputs
 	
 	state = INIT;
 	//tmpC = 0x07;
 	
 	LCD_init(); //initialize LCD
 	
-	TimerSet(1000);
+	TimerSet(1000); //1 sec
 	TimerOn();
 
 	while(1) {
