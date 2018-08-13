@@ -63,11 +63,22 @@ void Tick() { //begin fct
 			break;
 		
 		case INIT:
+		if(tmpA == 0x00) {
+			LCD_ClearScreen();
+			//score = 5;
+			LCD_Cursor(1); //positions the cursor on the LCD display
+			LCD_WriteData(score + '0'); //display 5 on screen
 			state = led_0;
+		}
 			break;
 		
 		case led_0:
 			if(tmpA == 0x01) { //if button is pressed, have to pause game
+				if(score > 0) {
+					score -= 1;
+					LCD_Cursor(1);
+					LCD_WriteData(score + '0');
+				}
 				state = press_0;
 			}
 			else {
@@ -77,6 +88,11 @@ void Tick() { //begin fct
 		
 		case led_1:
 			if(tmpA == 0x01) { //if button is pressed, have to pause game
+				if(score < 9) {
+					score += 1;
+					LCD_Cursor(1);
+					LCD_WriteData(score + '0');
+				}
 				state = press_1;
 			}
 			else{
@@ -86,6 +102,11 @@ void Tick() { //begin fct
 		
 		case led_2:
 			if(tmpA == 0x01) { //if button is pressed, have to pause game
+				if(score > 0) {
+					score -= 1;
+					LCD_Cursor(1);
+					LCD_WriteData(score + '0');
+				}
 				state = press_2;
 			}
 			else{
@@ -157,10 +178,6 @@ void Tick() { //begin fct
 	switch(state) { //actions
 		
 		case INIT:
-			LCD_ClearScreen();
-			score = 5;
-			LCD_Cursor(1); //positions the cursor on the LCD display
-			LCD_WriteData(score + '0'); //display 5 on screen
 			break;
 		
 		case led_0:
@@ -176,48 +193,36 @@ void Tick() { //begin fct
 			break;
 		
 		case press_0: //decrement
-			if(score > 0) {
-				score -= 1;
-				LCD_Cursor(1);
-				LCD_WriteData(score + '0');
-			}
+
 			/*else if(score < 0) {
 				LCD_DisplayString(1, "YOU LOSE!")
 			}*/
 			break;
 		
 		case press_1: //increment
-			if(score < 9) {
-				score += 1;
-				LCD_Cursor(1);
-				LCD_WriteData(score + '0');
-			}
-			else if(score == 9) {
+
+			if(score == 9) {
 				LCD_DisplayString(1, "YOU WON!");
 			}
 			break;
 		
 		case press_2: //decrement
-			if(score > 0) {
-				score -= 1;
-				LCD_Cursor(1);
-				LCD_WriteData(score + '0');
-			}
+
 			/*else if(score < 0) {
 				LCD_DisplayString(1, "YOU LOSE!")
 			}*/
 			break;
 		
 		case release_0:
-		PORTC = 0x01;
+		PORTB = 0x01;
 			break;
 		
 		case release_1:
-		PORTC = 0x02;
+		PORTB = 0x02;
 			break;
 		
 		case release_2:
-		PORTC = 0x04;
+		PORTB = 0x04;
 			break;
 		
 		case reset:
@@ -237,7 +242,7 @@ void Tick() { //begin fct
 int main(void) {
 	
 	DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
-	DDRB = 0xFF; PORTB = 0x00; //LED
+	DDRB = 0xFF; PORTB = 0x00; // LED
 	DDRC = 0xFF; PORTC = 0x00; // Configure port C's 8 pins as outputs
 	DDRD = 0xFF; PORTD = 0x00; // Configure port D's 8 pins as outputs
 	

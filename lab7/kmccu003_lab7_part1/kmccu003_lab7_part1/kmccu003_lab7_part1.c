@@ -7,7 +7,6 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "io.c"
 
 volatile unsigned char TimerFlag = 0;
 unsigned long _avr_timer_M = 1;
@@ -48,6 +47,7 @@ void TimerSet(unsigned long M) {
 //enum blink{} B_LED;
 enum three{init, led_0, led_1, led_2} T_LED;
 unsigned char tmpT = 0;
+unsigned char tmpB = 0;
 
 void threeLEDs() { //begin
 	
@@ -65,7 +65,7 @@ void threeLEDs() { //begin
 			break;
 			
 		case led_2:
-			T_LED = init;
+			T_LED = led_0;
 			break;
 	}
 	
@@ -93,14 +93,14 @@ void threeLEDs() { //begin
 }//end three LEDs
 
 //blinkingLED
-enum blink{init, off, on} B_LED;
+enum blink{init_1, off, on} B_LED;
 unsigned char tmpBlink = 0;
 
 void blinkingLED() { //begin
 	
 	switch(B_LED) { //transitions
 		
-	case init:
+	case init_1:
 		B_LED = off;
 		break;
 	
@@ -119,7 +119,7 @@ void blinkingLED() { //begin
 	
 	switch(B_LED) { //actions
 		
-		case init:
+		case init_1:
 			break;
 		
 		case off:
@@ -136,26 +136,23 @@ void blinkingLED() { //begin
 } //end blinking LED
 
 //Combine
-enum combine{init, leds} c_state;
+enum combine{leds} c_state;
 void combineLEDs() { //begin
 	
-	switch(combine) { //transitions
+	switch(c_state) { //transitions
 		
-		case init:
-			break;
-		
-		case leds:
+		case leds: //repeat
 			c_state = leds;
 			break;
 	}
 	
-	switch(combine) { //actions
-		
-		case init:
-			break;
+	switch(c_state) { //actions
 			
 		case leds:
-			PORTD = tmpT | tmpBlink; //which to write to port D
+			tmpB = tmpT | tmpBlink; //which to write to port B
+			break;
+			
+			default:
 			break;
 	}
 	
@@ -164,40 +161,25 @@ void combineLEDs() { //begin
 	
 	
 int main(void) {
+
+	DDRB = 0xFF; PORTB = 0x00;
 	
-	//DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
-	//DDRC = 0xFF; PORTC = 0x00; // Configure port C's 8 pins as outputs
-	DDRD = 0xFF; PORTD = 0x00; // Configure port D's 8 pins as outputs
-	
-	unsigned char t_count = 0;
-	unsigned char b_count = 0;
+	//unsigned char t_count = 0;
+	//unsigned char b_count = 0;
 	
 	T_LED = init;
 	B_LED = init;
-	c_state = init;
+	c_state = leds;
 	
-	LCD_init(); //initialize LCD
-	
-	TimerSet(100); //1 sec
+	TimerSet(1000); //1 sec
 	TimerOn();
 
 	while(1) {
-		
-		t_count++;
-		b_count++;
-		
-		if(t_count == 10) {
-			threeLEDs();
-			t_count = 0;
-		}
-		
-		if(b_count == 10) {
-			blinkingLED();
-			b_count = 0;
-		}
-		
-		combineLEDs();
 
+			threeLEDs();
+			blinkingLED();
+			combineLEDs();
+			PORTB = tmpB;
 		while(!TimerFlag) {};
 		TimerFlag = 0;
 	}
