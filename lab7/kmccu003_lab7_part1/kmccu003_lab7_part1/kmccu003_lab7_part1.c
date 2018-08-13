@@ -171,7 +171,7 @@ int main(void) {
 	B_LED = init;
 	c_state = leds;
 	
-	TimerSet(1000); //1 sec
+	TimerSet(1000); //1 sec 
 	TimerOn();
 
 	while(1) {
