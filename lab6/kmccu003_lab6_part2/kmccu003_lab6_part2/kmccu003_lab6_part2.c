@@ -47,7 +47,7 @@ void TimerSet(unsigned long M) {
 //start
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-enum States {INIT, led_0, led_1, led_2, press_0, press_1, press_2, release_0, release_1, release_2, reset} state;
+enum States {START, INIT, led_0, led_1, led_2, press_0, press_1, press_2, release_0, release_1, release_2, reset} state;
 
 unsigned char tmpA = 0x00;
 unsigned char score = 5;
@@ -58,6 +58,10 @@ void Tick() { //begin fct
 	
 	switch(state) {
 		
+		case START:
+			state = INIT;
+			break;
+		
 		case INIT:
 			state = led_0;
 			break;
@@ -67,7 +71,7 @@ void Tick() { //begin fct
 				state = press_0;
 			}
 			else {
-				state = led_1;
+				state = led_1; //move on to next
 			}
 			break;
 		
@@ -90,7 +94,7 @@ void Tick() { //begin fct
 			break;
 		
 		case press_0:
-			if(tmpA == 0x01) {
+			if(tmpA == 0x01) { //wrong!
 				state = press_0;
 			}
 			else {
@@ -99,7 +103,7 @@ void Tick() { //begin fct
 			break;
 		
 		case press_1:
-			if(tmpA == 0x01) {
+			if(tmpA == 0x01) { //right!
 				state = press_1;
 			}
 			else {
@@ -108,7 +112,7 @@ void Tick() { //begin fct
 			break;
 		
 		case press_2:
-			if(tmpA == 0x01) {
+			if(tmpA == 0x01) { //wrong!
 				state = press_2;
 			}
 			else {
@@ -156,7 +160,7 @@ void Tick() { //begin fct
 			LCD_ClearScreen();
 			score = 5;
 			LCD_Cursor(1); //positions the cursor on the LCD display
-			LCD_WriteData(score + '0');
+			LCD_WriteData(score + '0'); //display 5 on screen
 			break;
 		
 		case led_0:
@@ -171,13 +175,37 @@ void Tick() { //begin fct
 			PORTB = 0x04;
 			break;
 		
-		case press_0:	
+		case press_0: //decrement
+			if(score > 0) {
+				score -= 1;
+				LCD_Cursor(1);
+				LCD_WriteData(score + '0');
+			}
+			/*else if(score < 0) {
+				LCD_DisplayString(1, "YOU LOSE!")
+			}*/
 			break;
 		
-		case press_1:
+		case press_1: //increment
+			if(score < 9) {
+				score += 1;
+				LCD_Cursor(1);
+				LCD_WriteData(score + '0');
+			}
+			else if(score == 9) {
+				LCD_DisplayString(1, "YOU WON!");
+			}
 			break;
 		
-		case press_2:
+		case press_2: //decrement
+			if(score > 0) {
+				score -= 1;
+				LCD_Cursor(1);
+				LCD_WriteData(score + '0');
+			}
+			/*else if(score < 0) {
+				LCD_DisplayString(1, "YOU LOSE!")
+			}*/
 			break;
 		
 		case release_0:
@@ -206,12 +234,11 @@ void Tick() { //begin fct
 int main(void) {
 	
 	DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
-	DDRB = 0x00; PORTB = 0xFF;
+	DDRB = 0xFF; PORTB = 0x00; //LED
 	DDRC = 0xFF; PORTC = 0x00; // Configure port C's 8 pins as outputs
 	DDRD = 0xFF; PORTD = 0x00; // Configure port D's 8 pins as outputs
 	
 	state = INIT;
-	//tmpC = 0x07;
 	
 	LCD_init(); //initialize LCD
 	
