@@ -222,10 +222,13 @@ void Tick() { //begin fct
 		
 		case reset:
 		//PORTC = 0x00;
+		if(score == 9) {
+			LCD_ClearScreen();
+			score = 5;
+		}
 			break;
 
 		default:
-		state = INIT;
 			break;
 		
 	}//end actions
