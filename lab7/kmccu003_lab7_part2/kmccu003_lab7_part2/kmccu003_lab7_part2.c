@@ -164,32 +164,37 @@ int main(void) {
 
 	DDRB = 0xFF; PORTB = 0x00;
 	
-	unsigned long tot_period = 0;
-	unsigned long t_period = 300;
-	unsigned long b_period = 1000;
+	unsigned long tot_blink = 0;
+	unsigned long tot_three = 0;
+	unsigned long period = 100;
 	
 	T_LED = init;
 	B_LED = init;
 	c_state = leds;
 	
-	TimerSet(t_period);
+	TimerSet(period);
 	TimerOn();
 
 	while(1) {
-
-		threeLEDs();
 		
-		if(tot_period >= b_period) {
+		if(tot_blink >= 1000) {
 			blinkingLED();	
+			tot_blink = 0;
 		}
 		
+		if(tot_three >= 300) {
+			threeLEDs();
+			tot_three = 0;
+		}
+				
 		combineLEDs();
 		
 		PORTB = tmpB;
 		
 		while(!TimerFlag) {};
 		TimerFlag = 0;
-		tot_period += t_period; //add 300 everytime
+		tot_blink += period; //add 100 everytime
+		tot_three += period;
 	}
 	
 	return 0;

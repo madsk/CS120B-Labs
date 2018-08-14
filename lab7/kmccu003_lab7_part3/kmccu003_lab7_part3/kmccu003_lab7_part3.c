@@ -140,7 +140,7 @@ unsigned char s = 0x00;
 unsigned char button = 0x00;
 
 void speaker() {
-	button = ~PINA & 0x01;
+	button = ~PINA & 0x04; //PA2
 	
 	switch(sound) { //transitions
 		
@@ -163,7 +163,7 @@ void speaker() {
 	switch(sound) { //actions
 		
 		case s_on:
-		s = 0x10;
+		s = 0x01; //or 0x10s
 		break;
 		
 		case s_off:
@@ -206,8 +206,8 @@ int main(void) {
 	
 	unsigned long tot_three = 0;
 	unsigned long tot_blink = 0;
-	unsigned long t_period = 300; //three leds
-	unsigned long b_period = 1000; //blinking led
+	/*unsigned long t_period = 300; //three leds
+	unsigned long b_period = 1000; //blinking led*/
 	unsigned long s_period = 2; //speaker period
 	
 	T_LED = init;
@@ -219,12 +219,12 @@ int main(void) {
 	TimerOn();
 
 	while(1) {
-		if(tot_three >= t_period) { //when 300
+		if(tot_three >= 300) { //when 300
 		threeLEDs();
 		tot_three = 0; //reset
 		}
 		
-		if(tot_blink >= b_period) { //when 1000
+		if(tot_blink >= 1000) { //when 1000
 			blinkingLED();
 			tot_blink = 0;
 		}
