@@ -1,9 +1,12 @@
-/*
- * kmccu003_lab6_part2.c
- *
- * Created: 8/9/2018 12:51:13 PM
- * Author : Kiana
- */ 
+/*    Author : Kiana McCullough
+ * 
+ *    Partner(s) Name & E-mail: Keilani Conner, kconn006@ucr.edu
+ *    Lab Section: B21
+ *    Assignment: Lab # 6 Exercise # 2
+ *    
+ *    I acknowledge all content contained herein, excluding template or example
+ *    code, is my own original work.
+ */
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
