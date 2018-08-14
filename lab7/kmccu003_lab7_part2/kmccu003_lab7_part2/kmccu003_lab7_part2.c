@@ -164,25 +164,36 @@ int main(void) {
 
 	DDRB = 0xFF; PORTB = 0x00;
 	
-	//unsigned char t_count = 0;
-	//unsigned char b_count = 0;
+	unsigned long tot_period = 0;
+	unsigned long t_period = 300;
+	unsigned long b_period = 1000;
 	
 	T_LED = init;
 	B_LED = init;
 	c_state = leds;
 	
-	TimerSet(1000); //1 sec
+	TimerSet(t_period);
 	TimerOn();
 
 	while(1) {
 
 		threeLEDs();
-		blinkingLED();
+		
+		if(tot_period >= b_period) {
+			blinkingLED();	
+		}
+		
 		combineLEDs();
+		
 		PORTB = tmpB;
+		
 		while(!TimerFlag) {};
 		TimerFlag = 0;
+		tot_period += t_period; //add 300 everytime
 	}
 	
 	return 0;
 }
+
+/*Modify the above example so the three LEDs light for 300 ms,
+while PB3's LED still blinks 1 second on and 1 second off.*/
