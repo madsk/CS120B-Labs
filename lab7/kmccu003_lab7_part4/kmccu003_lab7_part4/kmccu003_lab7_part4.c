@@ -1,8 +1,8 @@
 /*
- * kmccu003_lab7_part3.c
+ * kmccu003_lab7_part4.c
  *
- * Created: 8/14/2018 11:58:31 AM
- * Author : Kiana
+ * Created: 8/14/2018 1:35:54 PM
+ * Author : ucrcse
  */ 
 
 #include <avr/io.h>
@@ -163,7 +163,7 @@ void speaker() {
 	switch(sound) { //actions
 		
 		case s_on:
-		s = 0x10; //or 0x10s
+		s = 0x10;
 		break;
 		
 		case s_off:
@@ -175,6 +175,77 @@ void speaker() {
 	}
 	
 }//end speaker
+
+unsigned char button_0 = 0x00;
+unsigned char button_1 = 0x00;
+unsigned char freq_cnt = 0;
+
+enum Freq{start, wait, inc, dec, wait2} freq;
+void change_freq() { //begin
+	
+	button_0 = ~PINA & 0x01; //PA0
+	button_1 = ~PINA & 0x02; //PA1
+	
+	switch(freq) { //transitions
+		
+		case start:
+			freq = wait;
+			break;
+			
+		case wait:
+			if(button_0 && !button_1) { //increment
+				freq = inc;
+			}
+			
+			else if(!button_0 && button_1) { //decrement
+				freq = dec;
+			}
+			
+			else {
+				freq = wait; //stay
+			}
+			break;
+			
+		case inc:
+			freq = wait2;
+			break;
+			
+		case dec:
+			freq = wait2;
+			break;
+			
+		case wait2:
+			if(button_0) {
+				freq = wait2;
+			}
+			else if(button_1) {
+				freq = wait2;
+			}
+			else {
+				freq = wait;
+			}
+			break;
+				
+	}
+	
+	switch(freq) {
+			
+		case inc:
+			freq_cnt += 1;
+			break;
+			
+		case dec:
+			freq_cnt -= 1;
+			break;
+			
+		default:
+		break;
+		
+		
+	}
+	
+	
+	}; //end freq change
 
 //Combine
 enum combine{leds} c_state;
@@ -206,9 +277,8 @@ int main(void) {
 	
 	unsigned long tot_three = 0;
 	unsigned long tot_blink = 0;
-	/*unsigned long t_period = 300; //three leds
-	unsigned long b_period = 1000; //blinking led*/
-	unsigned long s_period = 2; //speaker period
+	unsigned long s_time = 0;
+	unsigned long s_period = 1; //speaker period
 	
 	T_LED = init;
 	B_LED = init;
@@ -229,24 +299,27 @@ int main(void) {
 			tot_blink = 0;
 		}
 		
-		speaker(); //execute every period (2ms)
+		if(s_time >= freq_cnt) {
+		speaker(); //execute every period (1ms)
+		s_time = 0;
+		}
 		
+		change_freq();
 		combineLEDs();
 		
 		PORTB = tmpB;
 		
 		while(!TimerFlag) {};
 		TimerFlag = 0;
-		tot_three += s_period; //add 2 every time
+		tot_three += s_period; //add 1 every time
 		tot_blink += s_period;
+		s_time += s_period;
 	}
 	
 	return 0;
 }
 
-/*Modify the above example so the three LEDs light for 300 ms,
-while PB3's LED still blinks 1 second on and 1 second off.*/
 
-/*To the previous exercise's implementation, connect your speaker's red wire to PB4 and black wire to
-ground. Add a third task that toggles PB4 on for 2 ms and off for 2 ms as long as a switch on PA2
-is in the on position.*/
+/*Extend the previous exercise to allow a user to adjust the sound frequency up or down using buttons connected to PA0 (up) and PA1 (down).
+Using our 1 ms timer abstraction, the fastest you'll be able to pulse is 1 ms on and 1 ms off, meaning 500 Hz.
+You'll probably want to introduce another synchSM that polls the buttons and sets a global variable storing the current frequency that in turn is read by the frequency generator task.*/
