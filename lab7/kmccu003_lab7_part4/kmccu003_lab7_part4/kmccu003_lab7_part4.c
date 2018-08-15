@@ -275,9 +275,9 @@ int main(void) {
 	DDRB = 0xFF; PORTB = 0x00; //output
 	DDRA = 0x00; PORTA = 0xFF; //input
 	
-	unsigned long tot_three = 0;
-	unsigned long tot_blink = 0;
-	unsigned long s_time = 0;
+	unsigned long tot_three = 300;
+	unsigned long tot_blink = 1000;
+	unsigned long s_time = freq_cnt;
 	unsigned long s_period = 1; //speaker period
 	
 	T_LED = init;
@@ -300,8 +300,8 @@ int main(void) {
 		}
 		
 		if(s_time >= freq_cnt) {
-		speaker(); //execute every period (1ms)
-		s_time = 0;
+			speaker(); //execute every period (1ms)
+			s_time = 0;
 		}
 		
 		change_freq();
