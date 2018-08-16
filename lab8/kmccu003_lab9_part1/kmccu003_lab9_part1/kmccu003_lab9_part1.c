@@ -47,7 +47,8 @@ void PWM_off() {
 	TCCR0B = 0x00;
 }
 
-enum State{init, wait, c4, d4, e4} state;
+
+enum State{/*init,*/ wait, c4, d4, e4} state;
 	//enum State{init, wait, on, off} state;
 	unsigned char button_0 = 0;
 	unsigned char button_1 = 0;
@@ -55,31 +56,31 @@ enum State{init, wait, c4, d4, e4} state;
 	
 void tones() {
 	
-	button_0 = ~PINA & 0x01;
-	button_1 = ~PINA & 0x02;
-	button_2 = ~PINA & 0x04;
+	button_0 = ~PINA & 0x01; //PA0
+	button_1 = ~PINA & 0x02; //PA1
+	button_2 = ~PINA & 0x04; //PA2
 	
 	switch(state) {//transitions
-		case init:
+		/*case init:
 			state = wait;
-			break;
+			break;*/
 
 			case wait:
 			if(button_0 && !button_1 && !button_2) {
 				state = c4;
 			}
 		
-			else if(button_1 && !button_0 && !button_2) {
+			else if (!button_0 && button_1 && !button_2) {
 				state = d4;
 			}
 		
-			else if(button_2 && !button_0 && !button_1) {
+			else if(!button_0 && !button_1 && button_2) {
 				state = e4;
 			}
 			
-			else if(!button_0 && !button_1 && !button_2) {
+			/*else if(!button_0 && !button_1 && !button_2) {
 				state = wait;
-			}
+			}*/
 		
 			else { 
 				state = wait;
@@ -114,16 +115,17 @@ void tones() {
 			break;
 			
 			default:
-			state = init;
+			state = wait; //was init
+			break;
 			
 			
 	} //end transitions
 	
 	switch(state) { //actions
 		
-		case init:
+		/*case init:
 		set_PWM(0); //stop speaker from generating sound
-		break;
+		break;*/
 		
 		case wait:
 		set_PWM(0);
@@ -142,7 +144,6 @@ void tones() {
 		break;
 		
 		default:
-		state = init;
 		break;
 		
 		
@@ -159,7 +160,7 @@ int main(void)
 	DDRA = 0x00; PORTA = 0xFF; //input buttons
 	DDRB = 0x08; PORTB = 0x00; //output speaker
 	
-	state = init;
+	state = wait; //was init
 	
 	PWM_on();
 	
