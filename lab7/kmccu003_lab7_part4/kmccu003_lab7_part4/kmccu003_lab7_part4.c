@@ -1,9 +1,10 @@
-/*
- * kmccu003_lab7_part4.c
- *
- * Created: 8/14/2018 1:35:54 PM
- * Author : ucrcse
- */ 
+/*    Author : Kiana McCullough
+ *    Lab Section: B21
+ *    Assignment: Lab # 7 Exercise # 4
+ *    
+ *    I acknowledge all content contained herein, excluding template or example
+ *    code, is my own original work.
+ */
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
