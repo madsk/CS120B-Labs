@@ -23,7 +23,7 @@ void ADC_init() {
 int main(void)
 {
 	/* Replace with your application code */
-	DDRA = 0x00; PORTA = 0xFF; //input potentiometer
+	DDRA = 0x00; PORTA = 0xFF; //input photo resistor
 	DDRB = 0xFF; PORTB = 0x00; //LEDs [7:0]
 	DDRD = 0xFF; PORTD = 0x00; //LEDs [1:0]
 	
@@ -35,21 +35,20 @@ int main(void)
 	{
 		
 		unsigned short adc = ADC; // Value of ADC register now stored in variable adc
-
 		
-		if(adc <= (tmpMAX*1)) {
+		if(adc < (tmpMAX*1)) {
 			PORTB = 0x01; //first light, threshold for first LED
 		}
 		
-		else if (adc <= (tmpMAX*2)) {
+		else if (adc < (tmpMAX*2)) {
 			PORTB = 0x03; //first two lights
 		}
 		
-		else if (adc <= (tmpMAX*3)) {
+		else if (adc < (tmpMAX*3)) {
 			PORTB = 0x07; //first three lights
 		}
 		
-		else if (adc <= (tmpMAX*4)) {
+		else if (adc < (tmpMAX*4)) {
 			PORTB = 0x0F; //first four lights
 		}
 		
@@ -80,3 +79,4 @@ The LEDs should illuminated in sequence from 0 to 7, based on the amount of ligh
 Hints:
 Use the maximum ADC value observed from part 2 as the highest amount of light detectable by the photo resistor.
 Divide that number by eight to determine the thresholds for each LED.*/
+
