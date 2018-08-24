@@ -34,7 +34,8 @@ void set_PWM(double frequency) {
 }
 
 void PWM_on() {
-	TCCR0A = (1 << COM0A0);
+	//TCCR0A = (1 << COM0A0 );
+	TCCR0A = (1 << COM0A0 | 1 << WGM00);
 	// COM3A0: Toggle PB3 on compare match between counter and OCR0A
 	TCCR0B = (1 << WGM02) | (1 << CS01) | (1 << CS00);
 	// WGM02: When counter (TCNT0) matches OCR0A, reset counter
